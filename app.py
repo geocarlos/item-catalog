@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 from database_setup import Base, Category, Item
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('sqlite:///catalog.db',connect_args={'check_same_thread':False},
+                    poolclass=StaticPool)
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -39,7 +41,18 @@ def delete_item(item):
 ### JSON API ###
 @app.route('/catalog.json')
 def catalogJSON():
-    return 'This will be the JSON result'
+    categories = session.query(Category).all()
+    items = session.query(Item).all()
+    Categories=[c.serialize for c in categories]
+    Items=[i.serialize for i in items]
+    for cat in Categories:
+        cat['items'] = []
+        for item in Items:
+            if cat['id'] == item['category_id']:
+                cat['items'].append(item)
+
+    return  jsonify(Categories=Categories)
+
 ### JSON API ENDS ###
 
 if __name__ == '__main__':

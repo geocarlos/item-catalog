@@ -13,13 +13,31 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
 
+    @property
+    def serialize(self):
+        # Returns object data in easily serializeable format
+        return {
+            'name': self.name,
+            'id': self.id
+        }
+
 class Item(Base):
     __tablename__ = 'item'
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    description = Column(String(500), nullable=False)
+    description = Column(String(500))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+
+    @property
+    def serialize(self):
+        # Returns object data in easily serializeable format
+        return {
+            'name': self.name,
+            'description': self.description,
+            'category_id': self.category_id,  
+            'id': self.id
+        }
 
 engine = create_engine('sqlite:///catalog.db')
 
