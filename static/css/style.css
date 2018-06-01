@@ -8,6 +8,10 @@ header{
   color: #fff;
 }
 
+ul{
+  list-style: none;
+}
+
 .app-name,
 .login-btn{
   padding-top: 1em;
