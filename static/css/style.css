@@ -1,0 +1,22 @@
+html,
+body{
+  height: 100%;
+}
+
+header{
+  background-color: #599;
+  color: #fff;
+}
+
+.app-name,
+.login-btn{
+  padding-top: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.content{
+  padding-top: 1em;
+  background-color: #dedede;
+  min-height: 100%;
+}

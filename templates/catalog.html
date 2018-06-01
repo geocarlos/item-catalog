@@ -1,0 +1,18 @@
+{% include 'header.html' %}
+<div class="row">
+  <div class="categories col-md-4">
+    <h2>Cateogories</h2>
+    {% if categories %}
+    <ul>
+    {% for cat in categories %}
+    <li>{{cat.name}}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  <div class="item-list col-md-8">
+    <h2>List of Items will be here</h2>
+  </div>
+</div>
+
+{% include 'footer.html' %}
