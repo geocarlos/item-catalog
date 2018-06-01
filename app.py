@@ -17,8 +17,8 @@ session = DBSession()
 @app.route('/catalog')
 def catalog():
     categories = session.query(Category).all()
-    items = session.query(Item).all()
-    return render_template('catalog.html', categories=categories)
+    items = sorted(session.query(Item).all(), key=lambda item: item.time_added, reverse=True)
+    return render_template('catalog.html', categories=categories, items=items)
 
 @app.route('/catalog/<category>/items')
 def category(category):

@@ -41,6 +41,7 @@ class Item(Base):
             'name': self.name,
             'category_id': self.category_id,
             'description': self.description,
+            'time_added': self.time_added
         }
 
 engine = create_engine('sqlite:///catalog.db')

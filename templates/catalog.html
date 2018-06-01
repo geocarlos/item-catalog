@@ -11,7 +11,23 @@
     {% endif %}
   </div>
   <div class="item-list col-md-8">
-    <h2>List of Items will be here</h2>
+    <h2>Latest Items</h2>
+    {% if items %}
+    <ul>
+    {% for item in items %}
+    <li>
+      <div class="item">
+          {{item.name}}
+          {% for cat in categories %}
+          {% if cat.id == item.category_id %}
+          <em>({{cat.name}})</em>
+          {%endif%}
+          {%endfor%}
+      </div>
+    </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
   </div>
 </div>
 

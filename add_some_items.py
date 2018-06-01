@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import time
+
 from database_setup import Category, Base, Item
 
 engine = create_engine('sqlite:///catalog.db')
@@ -56,5 +58,6 @@ for item in items:
         category=cats[item['category']]
     ))
     session.commit()
+    time.sleep(2) # So I can test "Latest Added Items"
 
 print('Added items')
