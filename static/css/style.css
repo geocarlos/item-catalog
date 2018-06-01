@@ -3,9 +3,14 @@ body{
   height: 100%;
 }
 
-header{
+header,
+header a{
   background-color: #599;
   color: #fff;
+}
+header a:hover{
+  text-decoration: none;
+  color: lightblue;
 }
 
 ul{
@@ -23,4 +28,14 @@ ul{
   padding-top: 1em;
   background-color: #dedede;
   min-height: 100%;
+}
+
+.categories{
+  min-height: 100%;
+  box-shadow: 2px 0 #5553;
+  font-size: 1.2em;
+}
+
+.item-list{
+  font-size: 1.2em;
 }

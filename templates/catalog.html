@@ -1,7 +1,7 @@
 {% include 'header.html' %}
 <div class="row">
   <div class="categories col-md-4">
-    <h2>Cateogories</h2>
+    <h2>Categories</h2>
     {% if categories %}
     <ul>
     {% for cat in categories %}
@@ -10,14 +10,19 @@
     </ul>
     {% endif %}
   </div>
-  <div class="latest-items col-md-8">
+  <div class="item-list col-md-8">
     <h2>Latest Items</h2>
     {% if items %}
     <ul>
     {% for item in items %}
     <li>
       <div class="item">
-          <a href='#'>{{item.name}}</a>
+          {% for cat in categories %}
+          {% if cat.id == item.category_id %}
+          <a href="{{url_for('item', category=cat.name,item=item.name)}}">
+            {{item.name}}
+          </a>
+          {%endif%}
         <!--
           If this template has been loaded from the 'catalog' route,
           then the latest items should be displayed, rather than Items
@@ -26,12 +31,11 @@
           parentheses.
         -->
           {% if not category %}
-          {% for cat in categories %}
           {% if cat.id == item.category_id %}
           <em>({{cat.name}})</em>
-          {%endif%}
-          {%endfor%}
           {% endif %}
+          {% endif %}
+          {% endfor %}
       </div>
     </li>
     {% endfor %}

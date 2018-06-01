@@ -18,6 +18,8 @@ session = DBSession()
 @app.route('/catalog')
 def catalog():
     categories = session.query(Category).all()
+    ## Items must be sorted by the time they were added
+    ## so that the "latest items" view will be as expected
     items = sorted(session.query(Item).all(),
                    key=lambda item: item.time_added, reverse=True)
     return render_template('catalog.html', categories=categories, items=items)
@@ -30,18 +32,15 @@ def category(category):
     items = sorted(session.query(Item).filter_by(
         category_id=category.id).all(), key=lambda item: item.time_added, reverse=True)
     return render_template('catalog.html', categories=categories, items=items, category=category)
-    # return 'A list of items within %s' % category
-
 
 @app.route('/catalog/<category>/<item>')
 def item(category, item):
-    return 'The details of the given item'
-
+    item = session.query(Item).filter_by(name=item).one()
+    return render_template('item.html', item=item)
 
 @app.route('/catalog/add')
 def add_item():
     return 'Page to add new item'
-
 
 @app.route('/catalog/<item>/edit')
 def edit_item(item):

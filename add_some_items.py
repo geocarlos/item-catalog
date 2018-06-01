@@ -38,7 +38,11 @@ items = [
     {'name': 'pedal',
     'description': 'Very importat to have a comfortable biking experience, therefore, the pedals are very important.',
     'category': 4
-    }
+    },
+    {'name': 'Shinguards',
+    'description': 'Prevent having your shinbone broken when fighting for the ball.',
+    'category': 0
+    },
 ]
 
 ## List to hold the Category objects, so that they can be used when
