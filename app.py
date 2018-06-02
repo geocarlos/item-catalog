@@ -18,11 +18,20 @@ session = DBSession()
 @app.route('/catalog')
 def catalog():
     categories = session.query(Category).all()
-    ## Items must be sorted by the time they were added
-    ## so that the "latest items" view will be as expected
+    # Items must be sorted by the time they were added
+    # so that the "latest items" view will be as expected
     items = sorted(session.query(Item).all(),
                    key=lambda item: item.time_added, reverse=True)
     return render_template('catalog.html', categories=categories, items=items)
+
+# I don't like when it says that the page was not found just because of
+# a slash at the end, but I also don't like the slash to stay there,
+# so this is the reason for the redirect below.
+
+
+@app.route('/catalog/')
+def catalogr():
+    return redirect(url_for('catalog'))
 
 
 @app.route('/catalog/<category>/items')
@@ -33,14 +42,17 @@ def category(category):
         category_id=category.id).all(), key=lambda item: item.time_added, reverse=True)
     return render_template('catalog.html', categories=categories, items=items, category=category)
 
+
 @app.route('/catalog/<category>/<item>')
 def item(category, item):
     item = session.query(Item).filter_by(name=item).one()
     return render_template('item.html', item=item)
 
+
 @app.route('/catalog/add')
 def add_item():
     return 'Page to add new item'
+
 
 @app.route('/catalog/<item>/edit')
 def edit_item(item):
@@ -51,7 +63,11 @@ def edit_item(item):
 def delete_item(item):
     return 'Page to delete item'
 
+
 ### JSON API ###
+"""
+Return the whole catalog
+"""
 
 
 @app.route('/catalog.json')
@@ -67,6 +83,38 @@ def catalogJSON():
                 cat['items'].append(item)
 
     return jsonify(Categories=Categories)
+
+
+"""
+Return just a given category with its items
+"""
+
+
+@app.route('/catalog/<category>.json')
+def categoryJSON(category):
+    try:
+        category = session.query(Category).filter_by(name=category).one()
+        items = session.query(Item).filter_by(category_id=category.id)
+        Categ = category.serialize
+        Items = [i.serialize for i in items]
+        Categ['items'] = Items
+        return jsonify(Category=Categ)
+    except:
+        return jsonify({'result': 'No %s category was found.' % category})
+
+
+"""
+Return the item that matches the provided id
+"""
+
+
+@app.route('/catalog/json/<item_id>')
+def itemJSON(item_id):
+    try:
+        item = session.query(Item).filter_by(id=item_id).one()
+        return jsonify(Item=item.serialize)
+    except:
+        return jsonify({'result': 'No item with the ID informed.'})
 
 ### JSON API ENDS ###
 

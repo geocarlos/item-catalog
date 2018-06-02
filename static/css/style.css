@@ -27,7 +27,7 @@ ul{
 .content{
   padding-top: 1em;
   background-color: #dedede;
-  min-height: 100%;
+  min-height: 93%;
 }
 
 .categories{
@@ -38,4 +38,11 @@ ul{
 
 .item-list{
   font-size: 1.2em;
+}
+
+footer{
+  height: 7%;
+  font-size: 1.2em;
+  padding-top: 0.5em;
+  background-color: #9aa;
 }
