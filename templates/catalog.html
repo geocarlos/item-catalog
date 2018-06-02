@@ -11,7 +11,11 @@
     {% endif %}
   </div>
   <div class="item-list col-md-8">
+    {% if not category %}
     <h2>Latest Items</h2>
+    {% else %}
+    <h2>{{category.name | capitalize}}</h2>
+    {% endif %}
     {% if items %}
     <ul>
     {% for item in items %}
