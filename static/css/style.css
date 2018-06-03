@@ -54,6 +54,10 @@ ul{
   padding: 1em;
 }
 
+.login-page{
+  padding-top: 15%;
+}
+
 footer{
   height: 7%;
   font-size: 1.2em;

@@ -11,6 +11,16 @@
   <link rel='stylesheet' href="{{url_for('static', filename='css/bootstrap-reboot.min.css')}}">
   <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
   <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+  {% if isLoginPage %}
+  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+
+  <script src="//apis.google.com/js/platform.js?onload=start">
+  </script>
+
+  <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  {% endif %}
 </head>
 
 <body>
@@ -20,9 +30,11 @@
         <div class="col-md app-name">
             <h1><a href="{{url_for('catalog')}}">Catalog App</a></h1>
         </div>
+        {% if not isLoginPage %}
         <div class="login-btn col-md text-right">
-          <button class="btn btn-primary" type="button" name="button">Login</button>
+          <a href="{{url_for('showLogin')}}" class="btn btn-primary" name="button">Login</a>
         </div>
+        {% endif %}
       </div>
     </div>
   </header>
