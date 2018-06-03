@@ -1,20 +1,24 @@
 {% include 'header.html' %}
 <div class="edit-item">
   <h2>Edit Item</h2>
-  <form class="new-item-form" action="{{url_for('add_item')}}" method="post">
-    <input type="text" name="id" value="item.id">
+  <form class="new-item-form" action="{{url_for('edit_item', item=item)}}" method="post">
+    <input type="hidden" name="id" value="{{item.id}}">
     <div class="name-input">
       <label for="name">Title: </label>
       <input type="text" name="name" value="{{item.name}}">
     </div>
     <div class="description-input">
       <label for="name">Description: </label>
-      <textarea type="text" name="description" value="{{item.description}}"></textarea>
+      <textarea type="text" name="description" >{{item.description}}</textarea>
     </div>
     <div class="item-category">
-      <select name="category" value="{{item.category_id}}">
+      <select name="category">
         {% for cat in categories %}
+        {% if cat.id == item.category_id %}
+        <option value="{{cat.id}}" selected>{{cat.name | capitalize}}</option>
+        {% else %}
         <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
+        {% endif %}
         {% endfor %}
       </select>
     </div>

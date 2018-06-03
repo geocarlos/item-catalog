@@ -40,6 +40,10 @@ ul{
   font-size: 1.2em;
 }
 
+
+.edit-item label,
+.edit-item input,
+.edit-item textarea,
 .add-item label,
 .add-item input,
 .add-item textarea{
