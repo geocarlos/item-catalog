@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+<div class="add-item">
+  <h2>New Item</h2>
+  <form class="new-item-form" action="{{url_for('add_item')}}" method="post">
+    <div class="name-input">
+      <label for="name">Title: </label>
+      <input type="text" name="name" value="">
+    </div>
+    <div class="description-input">
+      <label for="name">Description: </label>
+      <textarea type="text" name="description" value=""></textarea>
+    </div>
+    <div class="item-category">
+      <select name="category">
+        {% for cat in categories %}
+        <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+</div>
+{% include 'footer.html' %}

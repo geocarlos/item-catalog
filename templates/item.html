@@ -1,8 +1,8 @@
 {% include 'header.html' %}
-<!--
+{#
   Consider that it is possible that the user types the URL for
   the specific item, but it may be no longer available.
--->
+#}   
 {% if item %}
 <div class="item-details">
   <h2>{{item.name | capitalize}}</h2>
@@ -14,5 +14,4 @@
 <div class="no-item">
   The item for this page was not found.
 </div>
-{% endif %}
-{% include 'footer.html' %}
+{% endif %} {% include 'footer.html' %}

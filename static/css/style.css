@@ -40,6 +40,16 @@ ul{
   font-size: 1.2em;
 }
 
+.add-item label,
+.add-item input,
+.add-item textarea{
+  display: block;
+}
+
+.new-item-form{
+  padding: 1em;
+}
+
 footer{
   height: 7%;
   font-size: 1.2em;

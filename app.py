@@ -49,9 +49,17 @@ def item(category, item):
     return render_template('item.html', item=item)
 
 
-@app.route('/catalog/add')
+@app.route('/catalog/add', methods=['GET', 'POST'])
 def add_item():
-    return 'Page to add new item'
+    if request.method == 'POST':
+        newItem = Item(
+            name=request.form['name'], description=request.form['description'], category_id=request.form['category'])
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('catalog'))
+    else:
+        categories = session.query(Category).all()
+        return render_template('add_item.html', categories=categories)
 
 
 @app.route('/catalog/<item>/edit')

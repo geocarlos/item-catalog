@@ -1,0 +1,24 @@
+{% include 'header.html' %}
+<div class="edit-item">
+  <h2>Edit Item</h2>
+  <form class="new-item-form" action="{{url_for('add_item')}}" method="post">
+    <input type="text" name="id" value="item.id">
+    <div class="name-input">
+      <label for="name">Title: </label>
+      <input type="text" name="name" value="{{item.name}}">
+    </div>
+    <div class="description-input">
+      <label for="name">Description: </label>
+      <textarea type="text" name="description" value="{{item.description}}"></textarea>
+    </div>
+    <div class="item-category">
+      <select name="category" value="{{item.category_id}}">
+        {% for cat in categories %}
+        <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+</div>
+{% include 'footer.html' %}

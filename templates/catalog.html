@@ -11,6 +11,9 @@
     {% endif %}
   </div>
   <div class="item-list col-md-8">
+    <div class="add-item-link">
+      <a href="{{url_for('add_item')}}">Add Item</a>
+    </div>
     {% if not category %}
     <h2>Latest Items</h2>
     {% else %}
@@ -27,13 +30,13 @@
             {{item.name}}
           </a>
           {%endif%}
-        <!--
+        {#
           If this template has been loaded from the 'catalog' route,
           then the latest items should be displayed, rather than Items
           specific to a category. In this case, the name of the category
           the item is within should be displayed beside the item name in
           parentheses.
-        -->
+        #}
           {% if not category %}
           {% if cat.id == item.category_id %}
           <em>({{cat.name}})</em>
@@ -45,10 +48,10 @@
     {% endfor %}
     </ul>
     {% else %}
-    <!--
+    {#
       Feedback in case there no items in the selected category,
       or there are no items at all.
-    -->
+    #}
     <div class="no-items">
       {%if category %}
       <span>No items in this category</span>
