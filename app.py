@@ -79,9 +79,16 @@ def edit_item(item):
         return render_template('edit_item.html', categories=categories, item=itemToEdit)
 
 
-@app.route('/catalog/<item>/delete')
+@app.route('/catalog/<item>/delete', methods=['GET', 'POST'])
 def delete_item(item):
-    return 'Page to delete item'
+    if request.method == 'POST':
+        itemToDelete = session.query(Item).filter_by(id=request.form['id']).one()
+        session.delete(itemToDelete)
+        session.commit()
+        return redirect(url_for('catalog'))
+    else:
+        itemToDelete = session.query(Item).filter_by(name=item).one()
+        return render_template('delete_item.html', item=itemToDelete)
 
 
 ### JSON API ###
