@@ -5,14 +5,19 @@
 
 
   <div class="text-center" id="signinButton">
-    <span class="g-signin" data-scope="openid email" data-clientid="634181551949-r5r1i70fr8kafvu9t0hkqf8v645pfgef.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
+    <span class="g-signin" data-scope="openid
+      email" data-clientid="634181551949-r5r1i70fr8kafvu9t0hkqf8v645pfgef.apps.googleusercontent.com"
+      data-redirecturi="postmessage"
+      data-accesstype="offline"
+      data-cookiepolicy="single_host_origin"
+      data-callback="signInCallback"
       data-approvalprompt="force">
     </span>
   </div>
 
   <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
-  <div id="result"></div>
+  <div id="result" class="text-center"></div>
 
   <script>
     function signInCallback(authResult) {

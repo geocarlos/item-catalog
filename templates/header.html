@@ -32,7 +32,11 @@
         </div>
         {% if not isLoginPage %}
         <div class="login-btn col-md text-right">
+          {% if isLoggedIn %}
+          <a href="{{url_for('logout')}}" class="btn btn-info" name="button">Logout</a>
+          {% else %}
           <a href="{{url_for('showLogin')}}" class="btn btn-primary" name="button">Login</a>
+          {% endif %}
         </div>
         {% endif %}
       </div>

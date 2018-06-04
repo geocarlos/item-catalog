@@ -54,7 +54,7 @@ def fbconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
-    print "Result: %s"%result
+    print "Result: %s" % result
 
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
@@ -185,11 +185,13 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+    login_session['provider'] = 'google'
 
-    print login_session
-
-    if getUserID(login_session['email']) is None:
-        createUser(login_session)
+    # Check if user exists, if it doesn't, make a new one
+    user_id = getUserID(data["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
@@ -272,7 +274,8 @@ def catalog():
     # so that the "latest items" view will be as expected
     items = sorted(session.query(Item).all(),
                    key=lambda item: item.time_added, reverse=True)
-    return render_template('catalog.html', categories=categories, items=items)
+    isLoggedIn = 'username' in login_session  # Switch button Login/Logout
+    return render_template('catalog.html', categories=categories, items=items, isLoggedIn=isLoggedIn)
 
 # I don't like when it says that the page was not found just because of
 # a slash at the end, but I also don't like the slash to stay there,
@@ -290,30 +293,43 @@ def category(category):
     category = filter(lambda cat: cat.name == category, categories)[0]
     items = sorted(session.query(Item).filter_by(
         category_id=category.id).all(), key=lambda item: item.time_added, reverse=True)
-    return render_template('catalog.html', categories=categories, items=items, category=category)
+    isLoggedIn = 'username' in login_session
+    return render_template('catalog.html',
+                           categories=categories,
+                           items=items,
+                           category=category,
+                           isLoggedIn=isLoggedIn)
 
 
 @app.route('/catalog/<category>/<item>')
 def item(category, item):
     item = session.query(Item).filter_by(name=item).one()
-    return render_template('item.html', item=item)
+    isLoggedIn = 'username' in login_session
+    return render_template('item.html', item=item, isLoggedIn=isLoggedIn)
 
 
 @app.route('/catalog/add', methods=['GET', 'POST'])
 def add_item():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newItem = Item(
-            name=request.form['name'], description=request.form['description'], category_id=request.form['category'])
+            name=request.form['name'],
+            description=request.form['description'],
+            category_id=request.form['category'])
         session.add(newItem)
         session.commit()
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('add_item.html', categories=categories)
+        return render_template('add_item.html', categories=categories,
+                               isLoggedIn=True)
 
 
 @app.route('/catalog/<item>/edit', methods=['GET', 'POST'])
 def edit_item(item):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         itemToEdit = session.query(Item).filter_by(id=request.form['id']).one()
         itemToEdit.name = request.form['name']
@@ -326,11 +342,14 @@ def edit_item(item):
     else:
         itemToEdit = session.query(Item).filter_by(name=item).one()
         categories = session.query(Category).all()
-        return render_template('edit_item.html', categories=categories, item=itemToEdit)
+        return render_template('edit_item.html', categories=categories,
+                               item=itemToEdit, isLoggedIn=True)
 
 
 @app.route('/catalog/<item>/delete', methods=['GET', 'POST'])
 def delete_item(item):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         itemToDelete = session.query(Item).filter_by(
             id=request.form['id']).one()
@@ -339,12 +358,28 @@ def delete_item(item):
         return redirect(url_for('catalog'))
     else:
         itemToDelete = session.query(Item).filter_by(name=item).one()
-        return render_template('delete_item.html', item=itemToDelete)
+        return render_template('delete_item.html', item=itemToDelete, isLoggedIn=True)
 
-# @app.route('/catalog/login')
-# def login():
-#     isLogin = True
-#     return render_template('login.html', isLoginPage=isLogin)
+
+# Disconnect based on provider
+@app.route('/logout')
+def logout():
+    login_session['provider'] = 'google'
+    if 'provider' in login_session:
+        print 'Provider %s'%login_session['provider']
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['access_token']
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+    return redirect(url_for('catalog'))
 
 
 ### JSON API ###
@@ -401,7 +436,15 @@ def itemJSON(item_id):
 
 ### JSON API ENDS ###
 
-
+"""
+The "ssl_context='adhoc'" configuration is the way I have found to make
+Facebook's OAuth work, as it requires 'https'. I also had to add a domain
+name to 127.0.0.1, different from 'localhost', which is 'catalogapplication.com',
+because facebook did not accept 'localhost' as an authorized domain.
+For some reason that I cannot understand, Google's API failed silently with
+with my fake domain name, and I had to used 'localhost' to test login with
+Google and 'catalogapplication.com' to test it with Facebook.
+"""
 if __name__ == '__main__':
     app.secret_key = 'this_is_the_wildcat'
     app.debug = True

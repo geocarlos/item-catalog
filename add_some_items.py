@@ -15,33 +15,38 @@ session = DBSession()
 
 ## Dictionaries to populate objects
 categories = [
-    {'name': 'football'},
-    {'name': 'volleyball'},
-    {'name': 'tennis'},
-    {'name': 'skating'},
-    {'name': 'biking'}
+    {'name': 'football', 'user_id': 1},
+    {'name': 'volleyball', 'user_id': 1},
+    {'name': 'tennis', 'user_id': 1},
+    {'name': 'skating', 'user_id': 1},
+    {'name': 'biking', 'user_id': 1}
 ]
 
 items = [
     {'name': 'football cleats',
     'description': 'This is about shoes for English football, rather than American football.',
-    'category': 0
+    'category': 0,
+    'user_id': 1
     },
     {'name': 'net',
     'description': 'The net that separates the two volleyball teams competing agains one another.',
-    'category': 1
+    'category': 1,
+    'user_id': 1
     },
     {'name': 'racket',
     'description': 'The tool used by the players to hit the bal.',
-    'category': 2
+    'category': 2,
+    'user_id': 1
     },
     {'name': 'pedal',
     'description': 'Very importat to have a comfortable biking experience, therefore, the pedals are very important.',
-    'category': 4
+    'category': 4,
+    'user_id': 1
     },
     {'name': 'Shinguards',
     'description': 'Prevent having your shinbone broken when fighting for the ball.',
-    'category': 0
+    'category': 0,
+    'user_id': 1
     },
 ]
 

@@ -11,9 +11,11 @@
     {% endif %}
   </div>
   <div class="item-list col-md-8">
+    {% if isLoggedIn %}
     <div class="add-item-link">
       <a href="{{url_for('add_item')}}">Add Item</a>
     </div>
+    {% endif %}
     {% if not category %}
     <h2>Latest Items</h2>
     {% else %}

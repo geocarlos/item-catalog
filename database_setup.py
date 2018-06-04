@@ -23,6 +23,8 @@ class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -41,6 +43,8 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     time_added = Column(DateTime(timezone=True), server_default=func.now())
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -49,8 +53,7 @@ class Item(Base):
             'id': self.id,
             'name': self.name,
             'category_id': self.category_id,
-            'description': self.description,
-            'time_added': self.time_added
+            'description': self.description
         }
 
 
