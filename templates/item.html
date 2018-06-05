@@ -15,7 +15,7 @@
   The item for this page was not found.
 </div>
 {% endif %}
-{% if isLoggedIn %}
+{% if isLoggedIn and isOwner %}
 <div class="edit-delete">
   <a href="{{url_for('edit_item', item=item.name)}}">Edit |</a>
   <a href="{{url_for('delete_item', item=item.name)}}"> Delete</a>

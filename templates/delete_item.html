@@ -4,7 +4,8 @@
   Are you sure you want to delete {{item.name}}?
   <form class="delete-form" action="{{url_for('delete_item', item=item)}}" method="post">
     <input type="hidden" name="id" value="{{item.id}}">
-    <input type="submit" name="delete" value="Yes, please">
+    <input class="btn btn-info" type="submit" name="delete" value="Yes, please">
+    <a class="btn btn-warning" href="{{url_for('catalog')}}">Not really...</a>
   </form>
 </div>
 {% include 'footer.html' %}

@@ -236,25 +236,14 @@ def getUserID(email):
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
-        print 'Access Token is None'
-        response = make_response(json.dumps(
-            'Current user not connected.'), 401)
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
     if result['status'] == '200':
-        del login_session['access_token']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -304,8 +293,10 @@ def category(category):
 @app.route('/catalog/<category>/<item>')
 def item(category, item):
     item = session.query(Item).filter_by(name=item).one()
+    # isLoggedIn is used to decide whether to show 'edit' and 'delete' options
     isLoggedIn = 'username' in login_session
-    return render_template('item.html', item=item, isLoggedIn=isLoggedIn)
+    isOwner = item.user_id == login_session['user_id']
+    return render_template('item.html', item=item, isLoggedIn=isLoggedIn, isOwner=isOwner)
 
 
 @app.route('/catalog/add', methods=['GET', 'POST'])
@@ -316,7 +307,8 @@ def add_item():
         newItem = Item(
             name=request.form['name'],
             description=request.form['description'],
-            category_id=request.form['category'])
+            category_id=request.form['category'],
+            user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         return redirect(url_for('catalog'))
@@ -328,9 +320,16 @@ def add_item():
 
 @app.route('/catalog/<item>/edit', methods=['GET', 'POST'])
 def edit_item(item):
+    itemToEdit = session.query(Item).filter_by(name=item).one()
     if 'username' not in login_session:
         return redirect('/login')
+    # If user type the URL to edit somebody else's item, they are
+    # redirected to the item page
+    if itemToEdit.user_id != login_session['user_id']:
+        cat = session.query(Category).filter_by(id=itemToEdit.category_id).one().name
+        return redirect(url_for('item', category=cat, item=item))
     if request.method == 'POST':
+        # Because they the name may have been edited, the id is checked here
         itemToEdit = session.query(Item).filter_by(id=request.form['id']).one()
         itemToEdit.name = request.form['name']
         itemToEdit.description = request.form['description']
@@ -340,7 +339,6 @@ def edit_item(item):
         session.commit()
         return redirect(url_for('item', category=category, item=itemToEdit.name))
     else:
-        itemToEdit = session.query(Item).filter_by(name=item).one()
         categories = session.query(Category).all()
         return render_template('edit_item.html', categories=categories,
                                item=itemToEdit, isLoggedIn=True)
@@ -348,8 +346,14 @@ def edit_item(item):
 
 @app.route('/catalog/<item>/delete', methods=['GET', 'POST'])
 def delete_item(item):
+    itemToDelete = session.query(Item).filter_by(name=item).one()
     if 'username' not in login_session:
         return redirect('/login')
+    # If user type the URL to delete somebody else's item, they are
+    # redirected to the item page
+    if itemToDelete.user_id != login_session['user_id']:
+        cat = session.query(Category).filter_by(id=itemToDelete.category_id).one().name
+        return redirect(url_for('item', category=cat, item=item))
     if request.method == 'POST':
         itemToDelete = session.query(Item).filter_by(
             id=request.form['id']).one()
@@ -357,16 +361,13 @@ def delete_item(item):
         session.commit()
         return redirect(url_for('catalog'))
     else:
-        itemToDelete = session.query(Item).filter_by(name=item).one()
         return render_template('delete_item.html', item=itemToDelete, isLoggedIn=True)
 
 
 # Disconnect based on provider
 @app.route('/logout')
 def logout():
-    login_session['provider'] = 'google'
     if 'provider' in login_session:
-        print 'Provider %s'%login_session['provider']
         if login_session['provider'] == 'google':
             gdisconnect()
             del login_session['gplus_id']
@@ -435,6 +436,7 @@ def itemJSON(item_id):
         return jsonify({'result': 'No item with the ID informed.'})
 
 ### JSON API ENDS ###
+
 
 """
 The "ssl_context='adhoc'" configuration is the way I have found to make

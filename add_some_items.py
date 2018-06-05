@@ -31,7 +31,7 @@ items = [
     {'name': 'net',
     'description': 'The net that separates the two volleyball teams competing agains one another.',
     'category': 1,
-    'user_id': 1
+    'user_id': 2
     },
     {'name': 'racket',
     'description': 'The tool used by the players to hit the bal.',
@@ -46,7 +46,7 @@ items = [
     {'name': 'Shinguards',
     'description': 'Prevent having your shinbone broken when fighting for the ball.',
     'category': 0,
-    'user_id': 1
+    'user_id': 2
     },
 ]
 
@@ -55,7 +55,7 @@ items = [
 cats = []
 
 for i in range(0, len(categories)):
-    cats.append(Category(name=categories[i]['name']))
+    cats.append(Category(name=categories[i]['name'], user_id=categories[i]['user_id']))
     session.add(cats[i])
     session.commit()
 
@@ -64,7 +64,8 @@ for item in items:
     session.add(Item(
         name=item['name'],
         description=item['description'],
-        category=cats[item['category']]
+        category=cats[item['category']],
+        user_id=item['user_id']
     ))
     session.commit()
     time.sleep(2) # So I can test "Latest Added Items"
