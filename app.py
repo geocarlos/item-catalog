@@ -295,7 +295,7 @@ def item(category, item):
     item = session.query(Item).filter_by(name=item).one()
     # isLoggedIn is used to decide whether to show 'edit' and 'delete' options
     isLoggedIn = 'username' in login_session
-    isOwner = item.user_id == login_session['user_id']
+    isOwner = 'user_id' in login_session and item.user_id == login_session['user_id']
     return render_template('item.html', item=item, isLoggedIn=isLoggedIn, isOwner=isOwner)
 
 
