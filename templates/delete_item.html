@@ -2,7 +2,7 @@
 <h2>Delete Item</h2>
 <div class="delete-confirm">
   Are you sure you want to delete {{item.name}}?
-  <form class="delete-form" action="{{url_for('delete_item', item=item)}}" method="post">
+  <form class="delete-form" action="{{url_for('delete_item', item=item.name)}}" method="post">
     <input type="hidden" name="id" value="{{item.id}}">
     <input class="btn btn-info" type="submit" name="delete" value="Yes, please">
     <a class="btn btn-warning" href="{{url_for('catalog')}}">Not really...</a>

@@ -57,6 +57,11 @@ ul{
   padding-top: 15%;
 }
 
+.flash{
+  color: #699;
+  text-align: center;
+}
+
 footer{
   height: 7%;
   font-size: 1.2em;

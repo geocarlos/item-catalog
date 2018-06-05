@@ -311,6 +311,7 @@ def add_item():
             user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
+        flash('Successfully added %s'%newItem.name)
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).all()
@@ -320,25 +321,31 @@ def add_item():
 
 @app.route('/catalog/<item>/edit', methods=['GET', 'POST'])
 def edit_item(item):
-    itemToEdit = session.query(Item).filter_by(name=item).one()
-    if 'username' not in login_session:
-        return redirect('/login')
-    # If user type the URL to edit somebody else's item, they are
-    # redirected to the item page
-    if itemToEdit.user_id != login_session['user_id']:
-        cat = session.query(Category).filter_by(id=itemToEdit.category_id).one().name
-        return redirect(url_for('item', category=cat, item=item))
     if request.method == 'POST':
         # Because they the name may have been edited, the id is checked here
         itemToEdit = session.query(Item).filter_by(id=request.form['id']).one()
         itemToEdit.name = request.form['name']
         itemToEdit.description = request.form['description']
         itemToEdit.category_id = request.form['category']
-        category = session.query(Category).filter_by(id=itemToEdit.category_id)
+        category = session.query(Category).filter_by(id=itemToEdit.category_id).one()
         session.add(itemToEdit)
         session.commit()
-        return redirect(url_for('item', category=category, item=itemToEdit.name))
+        if(itemToEdit.name == item):
+            flash('Item %s successfully updated'%item)
+        else:
+            flash('Item %s successfully updated to %s'%(item, itemToEdit.name))
+        return redirect(url_for('item', category=category.name, item=itemToEdit.name))
     else:
+        itemToEdit = session.query(Item).filter_by(name=item).one()
+        if 'username' not in login_session:
+            return redirect('/login')
+        # If user type the URL to edit somebody else's item, they are
+        # redirected to the item page
+        if itemToEdit.user_id != login_session['user_id']:
+            cat = session.query(Category).filter_by(
+                id=itemToEdit.category_id).one().name
+            flash('You cannot edit this item: not your item')
+            return redirect(url_for('item', category=cat, item=item))
         categories = session.query(Category).all()
         return render_template('edit_item.html', categories=categories,
                                item=itemToEdit, isLoggedIn=True)
@@ -346,21 +353,24 @@ def edit_item(item):
 
 @app.route('/catalog/<item>/delete', methods=['GET', 'POST'])
 def delete_item(item):
-    itemToDelete = session.query(Item).filter_by(name=item).one()
-    if 'username' not in login_session:
-        return redirect('/login')
-    # If user type the URL to delete somebody else's item, they are
-    # redirected to the item page
-    if itemToDelete.user_id != login_session['user_id']:
-        cat = session.query(Category).filter_by(id=itemToDelete.category_id).one().name
-        return redirect(url_for('item', category=cat, item=item))
     if request.method == 'POST':
         itemToDelete = session.query(Item).filter_by(
             id=request.form['id']).one()
         session.delete(itemToDelete)
         session.commit()
+        flash('Item %s successfully deleted'%item)
         return redirect(url_for('catalog'))
     else:
+        itemToDelete = session.query(Item).filter_by(name=item).one()
+        if 'username' not in login_session:
+            return redirect('/login')
+        # If user type the URL to delete somebody else's item, they are
+        # redirected to the item page
+        if itemToDelete.user_id != login_session['user_id']:
+            cat = session.query(Category).filter_by(
+                id=itemToDelete.category_id).one().name
+            flash('You cannot delete this item: not your item')
+            return redirect(url_for('item', category=cat, item=item))
         return render_template('delete_item.html', item=itemToDelete, isLoggedIn=True)
 
 
@@ -380,6 +390,7 @@ def logout():
         del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
+        flash('You have been logged out.')
     return redirect(url_for('catalog'))
 
 
