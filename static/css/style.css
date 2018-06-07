@@ -17,6 +17,14 @@ ul{
   list-style: none;
 }
 
+input,
+textarea{
+  border: solid;
+  border-width: thin;
+  border-radius: 0.3em;
+  background-color: #efe;
+}
+
 .app-name,
 .login-btn{
   padding-top: 1em;
@@ -38,6 +46,14 @@ ul{
 
 .category{
   margin-top: 3em;
+}
+
+.modal-header{
+  background-color: #599;
+}
+
+.buttons{
+  background-color: #ced;
 }
 
 .edit-item-form,
