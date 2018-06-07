@@ -64,7 +64,7 @@
       <div class="delete-category">
         <form action="{{url_for('delete_category')}}" method="POST">
           <input type="hidden" name="id" value="{{category.id}}">
-          <input class="btn btn-danger btn-sm" type="submit" value="Delete this category"/>
+          <input class="btn btn-warning btn-sm" type="submit" value="Delete this category"/>
         </form>
       </div>
       {% endif %}

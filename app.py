@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template
+from flask import request, redirect, url_for, jsonify, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -7,7 +8,8 @@ from database_setup import Base, Category, Item, User
 from flask import session as login_session, make_response
 import random
 import string
-from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
 import httplib2
 import json
 import requests
@@ -18,7 +20,8 @@ APPLICATION_NAME = "Catalog Application"
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread': False},
+engine = create_engine('sqlite:///catalog.db',
+                       connect_args={'check_same_thread': False},
                        poolclass=StaticPool)
 Base.metadata.bind = engine
 
@@ -225,7 +228,7 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except Exception:
         return None
 
 
@@ -264,7 +267,10 @@ def catalog():
     items = sorted(session.query(Item).all(),
                    key=lambda item: item.time_added, reverse=True)
     isLoggedIn = 'username' in login_session  # Switch button Login/Logout
-    return render_template('catalog.html', categories=categories, items=items, isLoggedIn=isLoggedIn)
+    return render_template('catalog.html',
+                           categories=categories,
+                           items=items,
+                           isLoggedIn=isLoggedIn)
 
 # I don't like when it says that the page was not found just because of
 # a slash at the end, but I also don't like the slash to stay there,
@@ -281,7 +287,8 @@ def category(category):
     categories = session.query(Category).all()
     category = filter(lambda cat: cat.name == category, categories)[0]
     items = sorted(session.query(Item).filter_by(
-        category_id=category.id).all(), key=lambda item: item.time_added, reverse=True)
+        category_id=category.id).all(),
+        key=lambda item: item.time_added, reverse=True)
     isLoggedIn = 'username' in login_session
     isOwner = category.user_id == login_session['user_id']
     return render_template('catalog.html',
@@ -297,8 +304,11 @@ def item(category, item):
     item = session.query(Item).filter_by(name=item).one()
     # isLoggedIn is used to decide whether to show 'edit' and 'delete' options
     isLoggedIn = 'username' in login_session
-    isOwner = 'user_id' in login_session and item.user_id == login_session['user_id']
-    return render_template('item.html', item=item, isLoggedIn=isLoggedIn, isOwner=isOwner)
+    isOwner = isLoggedIn and item.user_id == login_session['user_id']
+    return render_template('item.html',
+                           item=item,
+                           isLoggedIn=isLoggedIn,
+                           isOwner=isOwner)
 
 
 @app.route('/catalog/add', methods=['GET', 'POST'])
@@ -313,19 +323,25 @@ def add_item():
             user_id=login_session['user_id'])
         if not newItem.name:
             flash('You must provide a name for the item')
-            return redirect(url_for('add_item', d=newItem.description, c=newItem.category_id))
+            return redirect(url_for('add_item',
+                                    d=newItem.description,
+                                    c=newItem.category_id))
         session.add(newItem)
         session.commit()
         flash('Successfully added %s' % newItem.name)
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).all()
-        return render_template('add_item.html', categories=categories,
+        return render_template('add_item.html',
+                               categories=categories,
                                isLoggedIn=True)
+
 
 """
     Add a new category and returns the user to the add_item page
 """
+
+
 @app.route('/catalog/add/category', methods=['POST'])
 def add_category():
     if 'username' not in login_session:
@@ -341,9 +357,10 @@ def add_category():
         new_cat = request.form['name'].lower()
         cat = session.query(Category).filter_by(name=new_cat).one()
         if cat.name:
-            flash('Category "%s" already exists, please check the list properly'%cat.name)
+            flash(
+                'Category "%s" already exists, please check the list properly' % cat.name)
             return redirect(url_for('add_item', c=cat.id, d=ds, n=nm))
-    except:
+    except Exception:
         print 'Continue...'
     newCat = Category(
         name=request.form['name'], user_id=login_session['user_id'])
@@ -352,6 +369,7 @@ def add_category():
     flash('New category %s added' % newCat.name)
     newId = session.query(Category).filter_by(name=newCat.name).one().id
     return redirect(url_for('add_item', c=newId, d=ds, n=nm))
+
 
 @app.route('/catalog/category/delete', methods=['POST'])
 def delete_category():
@@ -368,13 +386,14 @@ def delete_category():
             # Make sure category is empty
             anItem = session.query(Item).filter_by(category_id=cat_id).one()
             if anItem:
-                flash('Category %s cannot be deleted: it is not empty'%catToDelete.name)
+                flash('Category %s cannot be deleted: it is not empty' %
+                      catToDelete.name)
                 return redirect(url_for('catalog'))
-        except:
+        except Exception:
             print 'Really empty'
         session.delete(catToDelete)
         session.commit()
-    except:
+    except Exception:
         print 'Yes, deleted'
     return redirect(url_for('catalog'))
 
@@ -440,7 +459,9 @@ def delete_item(item):
                 id=itemToDelete.category_id).one().name
             flash('You cannot delete this item: not your item')
             return redirect(url_for('item', category=cat, item=item))
-        return render_template('delete_item.html', item=itemToDelete, isLoggedIn=True)
+        return render_template('delete_item.html',
+                               item=itemToDelete,
+                               isLoggedIn=True)
 
 
 # Disconnect based on provider
@@ -463,7 +484,7 @@ def logout():
     return redirect(url_for('catalog'))
 
 
-### JSON API ###
+# JSON API #
 """
 Return the whole catalog
 """
@@ -498,7 +519,7 @@ def categoryJSON(category):
         Items = [i.serialize for i in items]
         Categ['items'] = Items
         return jsonify(Category=Categ)
-    except:
+    except Exception:
         return jsonify({'result': 'No %s category was found.' % category})
 
 
@@ -512,10 +533,10 @@ def itemJSON(item_id):
     try:
         item = session.query(Item).filter_by(id=item_id).one()
         return jsonify(Item=item.serialize)
-    except:
+    except Exception:
         return jsonify({'result': 'No item with the ID informed.'})
 
-### JSON API ENDS ###
+# JSON API ENDS #
 
 
 """
