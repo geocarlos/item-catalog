@@ -290,7 +290,7 @@ def category(category):
         category_id=category.id).all(),
         key=lambda item: item.time_added, reverse=True)
     isLoggedIn = 'username' in login_session
-    isOwner = category.user_id == login_session['user_id']
+    isOwner = isLoggedIn and category.user_id == login_session['user_id']
     return render_template('catalog.html',
                            categories=categories,
                            items=items,
