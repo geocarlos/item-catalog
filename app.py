@@ -309,9 +309,12 @@ def add_item():
             description=request.form['description'],
             category_id=request.form['category'],
             user_id=login_session['user_id'])
+        if not newItem.name:
+            flash('You must provide a name for the item')
+            return redirect(url_for('add_item', d=newItem.description, c=newItem.category_id))
         session.add(newItem)
         session.commit()
-        flash('Successfully added %s'%newItem.name)
+        flash('Successfully added %s' % newItem.name)
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).all()
@@ -324,16 +327,25 @@ def edit_item(item):
     if request.method == 'POST':
         # Because they the name may have been edited, the id is checked here
         itemToEdit = session.query(Item).filter_by(id=request.form['id']).one()
-        itemToEdit.name = request.form['name']
         itemToEdit.description = request.form['description']
         itemToEdit.category_id = request.form['category']
-        category = session.query(Category).filter_by(id=itemToEdit.category_id).one()
+        category = session.query(Category).filter_by(
+            id=itemToEdit.category_id).one()
+        # Funny guy may delete name and try to save it blank
+        if not request.form['name']:
+            flash('You cannot leave the item without a name')
+            return redirect(url_for('edit_item', item=request.path.split('/')[2]))
+        # If the name in the form is not an empty string, then it will be
+        # assigned to the item. Assigning it before will cause an error
+        # when returning to the editing form.
+        itemToEdit.name = request.form['name']
         session.add(itemToEdit)
         session.commit()
         if(itemToEdit.name == item):
-            flash('Item %s successfully updated'%item)
+            flash('Item %s successfully updated' % item)
         else:
-            flash('Item %s successfully updated to %s'%(item, itemToEdit.name))
+            flash('Item %s successfully updated to %s' %
+                  (item, itemToEdit.name))
         return redirect(url_for('item', category=category.name, item=itemToEdit.name))
     else:
         itemToEdit = session.query(Item).filter_by(name=item).one()
@@ -358,7 +370,7 @@ def delete_item(item):
             id=request.form['id']).one()
         session.delete(itemToDelete)
         session.commit()
-        flash('Item %s successfully deleted'%item)
+        flash('Item %s successfully deleted' % item)
         return redirect(url_for('catalog'))
     else:
         itemToDelete = session.query(Item).filter_by(name=item).one()

@@ -8,12 +8,16 @@
     </div>
     <div class="description-input">
       <label for="name">Description: </label>
-      <textarea type="text" name="description" value=""></textarea>
+      <textarea type="text" name="description">{{request.args.get('d') or ''}}</textarea>
     </div>
     <div class="item-category">
       <select name="category">
         {% for cat in categories %}
+        {% if cat.id == (request.args.get('c') | int) %}
+        <option value="{{cat.id}}" selected>{{cat.name | capitalize}}</option>
+        {% else %}
         <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
+        {% endif %}
         {% endfor %}
       </select>
     </div>
