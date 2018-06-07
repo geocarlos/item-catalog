@@ -51,8 +51,10 @@ def fbconnect():
         open('fb_client_secrets.json', 'r').read())['web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    urlBase = 'https://graph.facebook.com/'
+    oAuth = 'oauth/access_token?grant_type=fb_exchange_token&client_id='
+    url = '%s%s%s&client_secret=%s&fb_exchange_token=%s' % (
+        urlBase, oAuth, app_id, app_secret, access_token)
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -64,7 +66,7 @@ def fbconnect():
 
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    url = '%s?access_token=%s&fields=name,id,email' % (userinfo_url, token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     print "url sent for API access:%s" % url
@@ -79,7 +81,8 @@ def fbconnect():
     login_session['access_token'] = token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
+    url = '%s/picture?access_token=%s&redirect=0&height=200&width=200' % (
+        userinfo_url, token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -99,7 +102,7 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 50%;">'
 
     flash("Now logged in as %s" % login_session['username'])
     return output
@@ -169,8 +172,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -202,7 +205,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 50%;">'
     flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -358,7 +361,7 @@ def add_category():
         cat = session.query(Category).filter_by(name=new_cat).one()
         if cat.name:
             flash(
-                'Category "%s" already exists, please check the list properly' % cat.name)
+                'Category "%s" is already in the category list' % cat.name)
             return redirect(url_for('add_item', c=cat.id, d=ds, n=nm))
     except Exception:
         print 'Continue...'
@@ -410,7 +413,8 @@ def edit_item(item):
         # Funny guy may delete name and try to save it blank
         if not request.form['name']:
             flash('You cannot leave the item without a name')
-            return redirect(url_for('edit_item', item=request.path.split('/')[2]))
+            return redirect(url_for('edit_item',
+                                    item=request.path.split('/')[2]))
         # If the name in the form is not an empty string, then it will be
         # assigned to the item. Assigning it before will cause an error
         # when returning to the editing form.
@@ -422,7 +426,9 @@ def edit_item(item):
         else:
             flash('Item %s successfully updated to %s' %
                   (item, itemToEdit.name))
-        return redirect(url_for('item', category=category.name, item=itemToEdit.name))
+        return redirect(url_for('item',
+                                category=category.name,
+                                item=itemToEdit.name))
     else:
         itemToEdit = session.query(Item).filter_by(name=item).one()
         if 'username' not in login_session:
@@ -542,11 +548,12 @@ def itemJSON(item_id):
 """
 The "ssl_context='adhoc'" configuration is the way I have found to make
 Facebook's OAuth work, as it requires 'https'. I also had to add a domain
-name to 127.0.0.1, different from 'localhost', which is 'catalogapplication.com',
-because facebook did not accept 'localhost' as an authorized domain.
-For some reason that I cannot understand, Google's API failed silently with
-with my fake domain name, and I had to used 'localhost' to test login with
-Google and 'catalogapplication.com' to test it with Facebook.
+name to 127.0.0.1, different from 'localhost', which is
+'catalogapplication.com', because facebook did not accept 'localhost'
+as an authorized domain. For some reason that I cannot understand,
+Google's API failed silently with with my fake domain name, and I had
+to use 'localhost' to test login with Google and 'catalogapplication.com'
+to test it with Facebook.
 """
 if __name__ == '__main__':
     app.secret_key = 'this_is_the_wildcat'
