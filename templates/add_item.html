@@ -4,11 +4,11 @@
   <form class="new-item-form" action="{{url_for('add_item')}}" method="post">
     <div class="name-input">
       <label for="name">Title: </label>
-      <input type="text" name="name" value="">
+      <input id="name" type="text" name="name" value="{{request.args.get('n') or ''}}">
     </div>
     <div class="description-input">
       <label for="name">Description: </label>
-      <textarea type="text" name="description">{{request.args.get('d') or ''}}</textarea>
+      <textarea type="text" id="desc" name="description">{{request.args.get('d') or ''}}</textarea>
     </div>
     <div class="item-category">
       <select name="category">
@@ -22,6 +22,57 @@
       </select>
     </div>
     <input class="btn btn-primary" type="submit" value="Submit">
+    <a id="cat_modal" href="" class="text-center" data-toggle="modal" data-target="#addCategory">
+      Add new category
+    </a>
   </form>
+
+  <!-- Modal for new category -->
+  <div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="addCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCatModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="" action="{{url_for('add_category')}}" method="POST">
+            <div>
+              <label for="name">Name of the category: </label>
+              <input type="hidden" id="i_name" name="i_name" value="">
+              <input type="hidden" id="i_desc" name="i_desc" value="">
+              <input type="text" name="name" value="">
+            </div>
+        </div>
+        <div class="text-center">
+          <button id="add_cat" type="submit" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#catModal').on('shown.bs.modal', function() {
+    $('#add_cat').trigger('focus')
+  })
+
+  const cm = document.querySelector('#cat_modal');
+  const name = document.querySelector('#name');
+  const i_name = document.querySelector('#i_name');
+  const desc = document.querySelector('#desc');
+  const i_desc = document.querySelector('#i_desc');
+
+
+  cm.onclick = ()=>{
+    i_name.value = name.value;
+    i_desc.value = desc.value;
+  }
+</script>
 </div>
 {% include 'footer.html' %}
