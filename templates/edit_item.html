@@ -5,11 +5,11 @@
     <input type="hidden" name="id" value="{{item.id}}">
     <div class="name-input">
       <label for="name">Title: </label>
-      <input type="text" name="name" value="{{item.name}}">
+      <input class="col-lg" type="text" name="name" value="{{item.name}}">
     </div>
     <div class="description-input">
       <label for="name">Description: </label>
-      <textarea type="text" name="description" >{{item.description}}</textarea>
+      <textarea class="col-lg" type="text" name="description" >{{item.description}}</textarea>
     </div>
     <div class="item-category">
       <select name="category">
@@ -22,7 +22,10 @@
         {% endfor %}
       </select>
     </div>
-    <input class="btn btn-primary" type="submit" value="Submit">
+    <div class="text-right">
+      <a href="{{url_for('catalog')}}" class="btn btn-warning" type="submit" value="Submit">Cancel</a>
+      <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+    </div>
   </form>
 </div>
 {% include 'footer.html' %}

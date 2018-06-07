@@ -4,49 +4,54 @@
   <form class="new-item-form" action="{{url_for('add_item')}}" method="post">
     <div class="name-input">
       <label for="name">Title: </label>
-      <input id="name" type="text" name="name" value="{{request.args.get('n') or ''}}">
+      <input id="name" class="col-lg" type="text" name="name" value="{{request.args.get('n') or ''}}">
     </div>
     <div class="description-input">
       <label for="name">Description: </label>
-      <textarea type="text" id="desc" name="description">{{request.args.get('d') or ''}}</textarea>
+      <textarea class="col-lg" type="text" id="desc" name="description">{{request.args.get('d') or ''}}</textarea>
     </div>
-    <div class="item-category">
-      <select name="category">
-        {% for cat in categories %}
-        {% if cat.id == (request.args.get('c') | int) %}
-        <option value="{{cat.id}}" selected>{{cat.name | capitalize}}</option>
-        {% else %}
-        <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
-        {% endif %}
-        {% endfor %}
-      </select>
+    <div class="row category">
+      <div class="item-category col-md">
+        <select col-md name="category">
+          {% for cat in categories %}
+          {% if cat.id == (request.args.get('c') | int) %}
+          <option value="{{cat.id}}" selected>{{cat.name | capitalize}}</option>
+          {% else %}
+          <option value="{{cat.id}}">{{cat.name | capitalize}}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+        <a id="cat_modal" href="" class="text-center" data-toggle="modal" data-target="#addCategory">
+          Add new category
+        </a>
+      </div>
+      <div class="submit-button col-md text-right">
+        <a href="{{url_for('catalog')}}" class="btn btn-warning" type="submit" value="Submit">Cancel</a>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
     </div>
-    <input class="btn btn-primary" type="submit" value="Submit">
-    <a id="cat_modal" href="" class="text-center" data-toggle="modal" data-target="#addCategory">
-      Add new category
-    </a>
   </form>
 
   <!-- Modal for new category -->
-  <div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="addCatModalLabel" aria-hidden="true">
+  <div class="modal fade text-center" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="addCatModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addCatModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="addCatModalLabel">New Category</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <form class="" action="{{url_for('add_category')}}" method="POST">
-            <div>
+          <form action="{{url_for('add_category')}}" method="POST">
+            <div class="text-center">
               <label for="name">Name of the category: </label>
               <input type="hidden" id="i_name" name="i_name" value="">
               <input type="hidden" id="i_desc" name="i_desc" value="">
-              <input type="text" name="name" value="">
+              <input class="col-lg text-center" type="text" name="name" value="">
             </div>
         </div>
-        <div class="text-center">
+        <div class="buttons">
           <button id="add_cat" type="submit" class="btn btn-primary">Add</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
@@ -73,7 +78,7 @@
   const i_desc = document.querySelector('#i_desc');
 
 
-  cm.onclick = ()=>{
+  cm.onclick = () => {
     i_name.value = name.value;
     i_desc.value = desc.value;
   }

@@ -36,6 +36,29 @@ ul{
   font-size: 1.2em;
 }
 
+.category{
+  margin-top: 3em;
+}
+
+.edit-item-form,
+.new-item-form{
+  margin: 3em;
+  background-color: #cdd;
+  border-radius: 0.5em;
+}
+
+.item-details{
+  background-color: #7ba;
+  border-radius: 0.5em;
+  color: #321;
+  padding: 3em;
+  font-size: 1.5em;
+}
+
+.item-page{
+  margin: 3em;
+}
+
 .item-list{
   font-size: 1.2em;
 }

@@ -1,24 +1,26 @@
-{% include 'header.html' %}
-{#
-  Consider that it is possible that the user types the URL for
-  the specific item, but it may be no longer available.
-#}
-{% if item %}
-<div class="item-details">
-  <h2>{{item.name | capitalize}}</h2>
-  <div class="item-description">
-    {{item.description}}
+{% include 'header.html' %} {#
+  Consider that it is possible that the user types the URL for the specific
+  item, but it may be no longer available. #}
+<div class="item-page">
+  {% if item %}
+  <div class="item-details">
+    <h2>{{item.name | capitalize}}</h2>
+    <div class="item-description">
+      {{item.description}}
+    </div>
+  </div>
+  {% else %}
+  <div class="no-item">
+    The item for this page was not found.
+  </div>
+  {% endif %} {% if isLoggedIn and isOwner %}
+  <div class="edit-delete">
+    <a href="{{url_for('edit_item', item=item.name)}}">Edit |</a>
+    <a href="{{url_for('delete_item', item=item.name)}}"> Delete</a>
+  </div>
+  {% endif %}
+  <div class="text-right">
+    <a href="{{url_for('catalog')}}">Home</a>
   </div>
 </div>
-{% else %}
-<div class="no-item">
-  The item for this page was not found.
-</div>
-{% endif %}
-{% if isLoggedIn and isOwner %}
-<div class="edit-delete">
-  <a href="{{url_for('edit_item', item=item.name)}}">Edit |</a>
-  <a href="{{url_for('delete_item', item=item.name)}}"> Delete</a>
-</div>
-{% endif %}
 {% include 'footer.html' %}
