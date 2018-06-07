@@ -16,7 +16,35 @@ oauth2client is implemented for Google and Facebook. That requires credentials c
 
 If you are using a virtual machine with Vagrant to run the application, the configuration for making 127.0.0.1 show another domain name other than 'localhost' must be in your host machine.
 
-The file add_some_items.py is a script to enter initial data for testing. You may want to edit. 
+### Files you need to create for oAuth in the root foder
+
+For Google, you need to include the file client_secrets.json with the following information:
+
+`{
+  "web": {
+    "client_id": "[YOUR_APP_CLIENT_ID].apps.googleusercontent.com",
+    "project_id": "catalog-application-206115",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "[YOUR_APP_CLIENT_SECRET]",
+    "redirect_uris": ["https://localhost:5000/catalog"],
+    "javascript_origins": ["https://localhost:5000"]
+  }
+}`
+
+For Facebook, you need to include the file fb_client_secrets.json with the following information:
+
+`{
+  "web": {
+    "app_id": "[YOUR_APP_ID]",
+    "app_secret": "[YOUR_APP_SECRET]"
+  }
+}`
+
+### Initial data for tests
+
+The file add_some_items.py is a script to enter initial data for testing. You may want to edit.
 
 ## Run the application
 
