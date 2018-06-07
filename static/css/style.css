@@ -91,3 +91,23 @@ footer{
   padding-top: 0.5em;
   background-color: #9aa;
 }
+
+@media screen and (max-width: 500px){
+  .item-page{
+    margin: 0;
+  }
+  .item-details{
+    font-size: 1em;
+  }
+
+  .categories,
+  .item-list{
+    font-size: 1em;
+  }
+
+  .edit-item-form,
+  .new-item-form{
+    margin: 1em;
+  }
+
+}
