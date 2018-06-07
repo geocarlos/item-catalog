@@ -61,7 +61,11 @@
   $('#catModal').on('shown.bs.modal', function() {
     $('#add_cat').trigger('focus')
   })
-
+  /*
+    In case the user decides to add a new category after they have already
+    entered a name and/or a description for the new item, they may add
+    the new category and the data may have already entered will preserved.
+  */
   const cm = document.querySelector('#cat_modal');
   const name = document.querySelector('#name');
   const i_name = document.querySelector('#i_name');
