@@ -14,13 +14,23 @@
     The item for this page was not found.
   </div>
   {% endif %} {% if isLoggedIn and isOwner %}
-  <div class="edit-delete">
-    <a href="{{url_for('edit_item', item=item.name)}}">Edit |</a>
-    <a href="{{url_for('delete_item', item=item.name)}}"> Delete</a>
-  </div>
-  {% endif %}
-  <div class="text-right">
-    <a href="{{url_for('catalog')}}">Home</a>
+  <div class="item-page-links row text-center">
+    <div class="edit-delete col-md text-center">
+      <a href="{{url_for('edit_item', item=item.name)}}">Edit</a>
+    </div>
+    <div class="col-md">
+      |
+    </div>
+    <div class="edit-delete col-md-1 text-center">
+      <a href="{{url_for('delete_item', item=item.name)}}">Delete</a>
+    </div>
+    <div class="col-md">
+      |
+    </div>
+    {% endif %}
+    <div class="col-md text-center">
+      <a href="{{url_for('catalog')}}">Home</a>
+    </div>
   </div>
 </div>
 {% include 'footer.html' %}

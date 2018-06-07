@@ -283,11 +283,13 @@ def category(category):
     items = sorted(session.query(Item).filter_by(
         category_id=category.id).all(), key=lambda item: item.time_added, reverse=True)
     isLoggedIn = 'username' in login_session
+    isOwner = category.user_id == login_session['user_id']
     return render_template('catalog.html',
                            categories=categories,
                            items=items,
                            category=category,
-                           isLoggedIn=isLoggedIn)
+                           isLoggedIn=isLoggedIn,
+                           isOwner=isOwner)
 
 
 @app.route('/catalog/<category>/<item>')
@@ -324,7 +326,7 @@ def add_item():
 """
     Add a new category and returns the user to the add_item page
 """
-@app.route('/catalog/add/category', methods=['GET', 'POST'])
+@app.route('/catalog/add/category', methods=['POST'])
 def add_category():
     if 'username' not in login_session:
         return redirect(url_for('catalog'))
@@ -350,6 +352,31 @@ def add_category():
     flash('New category %s added' % newCat.name)
     newId = session.query(Category).filter_by(name=newCat.name).one().id
     return redirect(url_for('add_item', c=newId, d=ds, n=nm))
+
+@app.route('/catalog/category/delete', methods=['POST'])
+def delete_category():
+    if 'username' not in login_session:
+        return redirect(url_for('catalog'))
+    cat_id = request.form['id']
+    try:
+        catToDelete = session.query(Category).filter_by(id=cat_id).one()
+        # Make sure user owns the category
+        if catToDelete.user_id != login_session['user_id']:
+            flash('Not your category')
+            return redirect(url_for('catalog'))
+        try:
+            # Make sure category is empty
+            anItem = session.query(Item).filter_by(category_id=cat_id).one()
+            if anItem:
+                flash('Category %s cannot be deleted: it is not empty'%catToDelete.name)
+                return redirect(url_for('catalog'))
+        except:
+            print 'Really empty'
+        session.delete(catToDelete)
+        session.commit()
+    except:
+        print 'Yes, deleted'
+    return redirect(url_for('catalog'))
 
 
 @app.route('/catalog/<item>/edit', methods=['GET', 'POST'])

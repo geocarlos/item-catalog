@@ -49,7 +49,7 @@ textarea{
 }
 
 .modal-header{
-  background-color: #599;
+  background-color: #efe;
 }
 
 .buttons{
@@ -73,6 +73,11 @@ textarea{
 
 .item-page{
   margin: 3em;
+}
+
+.item-page-links{
+  margin-left: 3em;
+  margin-right: 3em;
 }
 
 .item-list{
@@ -119,11 +124,18 @@ footer{
   .categories,
   .item-list{
     font-size: 1em;
+    box-shadow: 1px 0 #5553;
+    padding: 1em;
   }
 
   .edit-item-form,
   .new-item-form{
     margin: 1em;
+  }
+
+  .catalog{
+    padding: 2em;
+    padding-top: 1em;
   }
 
 }

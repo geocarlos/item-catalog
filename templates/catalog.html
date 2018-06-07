@@ -1,5 +1,5 @@
 {% include 'header.html' %}
-<div class="row">
+<div class="row catalog">
   <div class="categories col-md-4">
     <h2>Categories</h2>
     {% if categories %}
@@ -57,6 +57,17 @@
     <div class="no-items">
       {%if category %}
       <span>No items in this category</span>
+      {# If user has added a category and it has no items yet,
+        they can delete it here.
+      #}
+      {% if isOwner %}
+      <div class="delete-category">
+        <form action="{{url_for('delete_category')}}" method="POST">
+          <input type="hidden" name="id" value="{{category.id}}">
+          <input class="btn btn-danger btn-sm" type="submit" value="Delete this category"/>
+        </form>
+      </div>
+      {% endif %}
       {%else%}
       <span>No items yet</span>
       {%endif%}
