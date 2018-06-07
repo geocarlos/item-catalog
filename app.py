@@ -200,7 +200,7 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
@@ -321,20 +321,34 @@ def add_item():
         return render_template('add_item.html', categories=categories,
                                isLoggedIn=True)
 
-
+"""
+    Add a new category and returns the user to the add_item page
+"""
 @app.route('/catalog/add/category', methods=['GET', 'POST'])
 def add_category():
+    if 'username' not in login_session:
+        return redirect(url_for('catalog'))
     if not request.form['name']:
         flash('No category added, because you did not provide a name')
         return redirect(url_for('add_item'))
+
+    # Get info from format
+    nm = request.form['i_name']
+    ds = request.form['i_desc']
+    try:
+        new_cat = request.form['name'].lower()
+        cat = session.query(Category).filter_by(name=new_cat).one()
+        if cat.name:
+            flash('Category "%s" already exists, please check the list properly'%cat.name)
+            return redirect(url_for('add_item', c=cat.id, d=ds, n=nm))
+    except:
+        print 'Continue...'
     newCat = Category(
         name=request.form['name'], user_id=login_session['user_id'])
     session.add(newCat)
     session.commit()
     flash('New category %s added' % newCat.name)
     newId = session.query(Category).filter_by(name=newCat.name).one().id
-    nm = request.form['i_name']
-    ds = request.form['i_desc']
     return redirect(url_for('add_item', c=newId, d=ds, n=nm))
 
 
