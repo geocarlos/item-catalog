@@ -29,12 +29,14 @@ categories = [
 
 items = [
     {'name': 'football cleats',
-     'description': 'This is about shoes for English football, rather than American football.',
+     'description': '''This is about shoes for English football,
+     rather than American football.''',
      'category': 0,
      'user_id': 1
      },
     {'name': 'net',
-     'description': 'The net that separates the two volleyball teams competing agains one another.',
+     'description': '''The net that separates the two volleyball
+     teams competing agains one another.''',
      'category': 1,
      'user_id': 2
      },
@@ -44,12 +46,14 @@ items = [
      'user_id': 1
      },
     {'name': 'pedal',
-     'description': 'Very importat to have a comfortable biking experience, therefore, the pedals are very important.',
+     'description': '''Very importat to have a comfortable biking experience,
+     therefore, the pedals are very important.''',
      'category': 4,
      'user_id': 1
      },
     {'name': 'Shinguards',
-     'description': 'Prevent having your shinbone broken when fighting for the ball.',
+     'description': '''Prevent having your shinbone broken when
+     fighting for the ball.''',
      'category': 0,
      'user_id': 2
      },
