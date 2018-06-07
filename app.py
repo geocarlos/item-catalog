@@ -321,19 +321,22 @@ def add_item():
         return render_template('add_item.html', categories=categories,
                                isLoggedIn=True)
 
+
 @app.route('/catalog/add/category', methods=['GET', 'POST'])
 def add_category():
     if not request.form['name']:
         flash('No category added, because you did not provide a name')
         return redirect(url_for('add_item'))
-    newCat = Category(name=request.form['name'], user_id=login_session['user_id'])
+    newCat = Category(
+        name=request.form['name'], user_id=login_session['user_id'])
     session.add(newCat)
     session.commit()
-    flash('New category %s added'%newCat.name)
+    flash('New category %s added' % newCat.name)
     newId = session.query(Category).filter_by(name=newCat.name).one().id
     nm = request.form['i_name']
     ds = request.form['i_desc']
-    return redirect(url_for('add_item', c=newId, d=ds,n=nm))
+    return redirect(url_for('add_item', c=newId, d=ds, n=nm))
+
 
 @app.route('/catalog/<item>/edit', methods=['GET', 'POST'])
 def edit_item(item):
