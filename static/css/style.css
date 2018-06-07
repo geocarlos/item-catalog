@@ -102,7 +102,12 @@ textarea{
 }
 
 .login-page{
-  padding-top: 15%;
+  padding-top: 5%;
+}
+
+.login-heading{
+  margin-top: 5%;
+  font-family: 'Lobster', cursive;
 }
 
 .flash{

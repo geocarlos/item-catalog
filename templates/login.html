@@ -1,4 +1,7 @@
 {% include 'header.html'%}
+<div class="text-center login-heading">
+  <h3>Login or Sign Up using: </h3>
+</div>
 <div class="login-page">
 
   <!-- GOOGLE PLUS SIGN IN BUTTON-->
@@ -17,7 +20,7 @@
 
   <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
-  <div id="result" class="text-center login-feedback"></div>
+  <div id="result" class="text-center"></div>
 
   <script>
     function signInCallback(authResult) {
@@ -104,6 +107,9 @@
       });
     }
   </script>
+  <div class="login-heading text-center">
+    <h3>or</h3>
+  </div>
 
   <div class="text-center">
     <button>
