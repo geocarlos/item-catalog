@@ -1,6 +1,7 @@
 html,
 body{
   height: 100%;
+  font-family: 'Roboto', sans-serif;
 }
 
 header,
@@ -39,7 +40,7 @@ textarea{
 .content{
   padding-top: 1em;
   background-color: #dedede;
-  min-height: 93%;
+  min-height: 100%;
 }
 
 .categories{
@@ -63,6 +64,7 @@ textarea{
 .edit-item-form,
 .new-item-form{
   margin: 3em;
+  margin-bottom: 0;
   background-color: #cdd;
   border-radius: 0.5em;
 }
@@ -77,6 +79,7 @@ textarea{
 
 .item-page{
   margin: 3em;
+  margin-bottom: 0;
 }
 
 .item-page-links{
@@ -115,6 +118,13 @@ textarea{
   text-align: center;
 }
 
+.help{
+  margin: 1em;
+  margin-bottom: 0;
+  padding: 3em;
+  color
+}
+
 footer{
   height: 7%;
   font-size: 1.2em;
@@ -145,6 +155,12 @@ footer{
   .catalog{
     padding: 2em;
     padding-top: 1em;
+  }
+
+  .help{
+    margin: 0;
+    padding: 1em;
+    color
   }
 
 }

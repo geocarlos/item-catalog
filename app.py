@@ -470,7 +470,11 @@ def delete_item(item):
                                isLoggedIn=True)
 
 
-# Disconnect based on provider
+"""
+ Disconnect based on provider
+"""
+
+
 @app.route('/logout')
 def logout():
     if 'provider' in login_session:
@@ -489,6 +493,13 @@ def logout():
         flash('You have been logged out.')
     return redirect(url_for('catalog'))
 
+
+"""
+    Show Help Page
+"""
+@app.route('/catalog/help')
+def showHelp():
+    return render_template('help.html')
 
 # JSON API #
 """
