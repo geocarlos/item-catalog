@@ -497,9 +497,12 @@ def logout():
 """
     Show Help Page
 """
+
+
 @app.route('/catalog/help')
 def showHelp():
     return render_template('help.html')
+
 
 # JSON API #
 """
