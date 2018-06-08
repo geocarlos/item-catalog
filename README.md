@@ -52,6 +52,6 @@ Once you have the required Python modules installed, you may start the applicati
 
 `python app.py`
 
-If you leave the app.py file as is, and everything works just fine, you may view the application on https://localhost or https://catalogapplication.com
+If you leave the app.py file as is, and everything works just fine, you may view the application on https://localhost:5000 or https://catalogapplication.com:5000
 
-In case you want HTTP, instead of HTTPS, you will have to remove "ssl_context='adhoc'" from app.run, at the ending of the app.py file, and your Google oAuth settings will need to include http://localhost.  
+In case you want HTTP, instead of HTTPS, you will have to remove "ssl_context='adhoc'" from app.run, at the ending of the app.py file, and your Google oAuth settings will need to include http://localhost:5000.  
