@@ -44,7 +44,7 @@ For Facebook, you need to include the file fb_client_secrets.json with the follo
 
 ### Initial data for tests
 
-The file add_some_items.py is a script to enter initial data for testing. You may want to edit.
+The file add_some_items.py is a script to enter initial data for testing. You may want to edit it.
 
 ## Run the application
 
