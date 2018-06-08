@@ -12,7 +12,7 @@ It is a Flask application designed to hold a list of items (a catalog) separated
 - SQLAlchemy
 - oauth2client
 
-oauth2client is implemented for Google and Facebook. That requires credentials configuration on Google and Facebook. For local development, Facebook must be provided with a domain name other than "localhost" (please refer to the ending of the "app.py" file). Facebook also requires https and the IP of your server (your public IP) must be entered in the app basic settings on Facebook.
+oauth2client is implemented for Google and Facebook. That requires credentials configuration on Google and Facebook. For local development, Facebook must be provided with a domain name other than "localhost" (please refer to the ending of the "app.py" file). Facebook also requires https and the IP of your server (your public IP) must be entered in the app advanced settings on Facebook.
 
 If you are using a virtual machine with Vagrant to run the application, the configuration for making 127.0.0.1 show another domain name other than 'localhost' must be in your host machine.
 
